@@ -15,7 +15,9 @@ public class Documento implements Serializable {
 	private String esquerda;
 	private String direita;
 
-	public Documento() {};
+	public Documento() {
+		
+	}
 	
 	public Documento(long id, String esquerda, String direita) {
 		this.id = id;

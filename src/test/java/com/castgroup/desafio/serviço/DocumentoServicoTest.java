@@ -18,7 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.castgroup.desafio.modelo.Documento;
 import com.castgroup.desafio.repositorio.Repositorio;
-import com.castgroup.desafio.utils.PosicaoDoc;
+import com.castgroup.desafio.utils.Mensagens;
+import com.castgroup.desafio.utils.DocumentoPosicao;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,76 +31,105 @@ public class DocumentoServicoTest {
 	@Mock
 	public Repositorio repositorio;
 
+	private static String DOCUMENTO = "YWJjZGY=";
+	private static String DOCUMENTO_DIFERENTE = "YWJjZGU=";
+	private static String DOCUMENTO_TAM_DIFERENTE = "YWJjZGVmZw==";
+
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
 	}
 
-	@DisplayName("Salvar Documento Esquerda")
+	@DisplayName("Salvar documento esquerdo sucesso")
 	@Test
-	public void salvarDocEsquerdaTest() {
+	public void salvarDocumentoEsquerdoSucessoTest() {
 		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
 		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
-		Documento documentoEsquerda = docServico.salvar(1l, "YWJjZGY=", PosicaoDoc.ESQUERDA.toString());
+		Documento documentoEsquerdo = docServico.salvar(1l, DOCUMENTO, DocumentoPosicao.ESQUERDA.toString());
 
-		Assert.assertThat(documentoEsquerda.getId(), Matchers.is(1l));
-		Assert.assertThat(documentoEsquerda.getEsquerda(), Matchers.is("YWJjZGY="));
-		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoEsquerda.getDireita()));
+		Assert.assertThat(documentoEsquerdo.getId(), Matchers.is(1l));
+		Assert.assertThat(documentoEsquerdo.getEsquerda(), Matchers.is(DOCUMENTO));
+		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoEsquerdo.getDireita()));
 	}
 
-	@DisplayName("Salvar Documento Direita")
+	@DisplayName("Salvar documento esquerdo falha")
 	@Test
-	public void salvardocDireitaTest() {
+	public void salvarDocumentoEsquerdoFalhaTest() {
 		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
 		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
-		Documento documentoDireita = docServico.salvar(1l, "YWJjZGY=", PosicaoDoc.DIREITA.toString());
+		Documento documentoEsquerdo = docServico.salvar(1l, "", DocumentoPosicao.ESQUERDA.toString());
 
-		Assert.assertThat(documentoDireita.getId(), Matchers.is(1l));
-		Assert.assertThat(documentoDireita.getDireita(), Matchers.is("YWJjZGY="));
-		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoDireita.getEsquerda()));
+		Assert.assertNull(documentoEsquerdo);
 	}
 
-	@DisplayName("Salvar Documento Sem Posição")
+	@DisplayName("Salvar documento direito sucesso")
+	@Test
+	public void salvardocumentoDireitoSucessoTest() {
+		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
+		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
+		Documento documentoDireito = docServico.salvar(1l, "YWJjZGY=", DocumentoPosicao.DIREITA.toString());
+
+		Assert.assertThat(documentoDireito.getId(), Matchers.is(1l));
+		Assert.assertThat(documentoDireito.getDireita(), Matchers.is("YWJjZGY="));
+		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoDireito.getEsquerda()));
+	}
+
+	@DisplayName("Salvar documento direito falha")
+	@Test
+	public void salvarDocumentoDireitoFalhaTest() {
+		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
+		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
+		Documento documentoDireito = docServico.salvar(1l, "", DocumentoPosicao.DIREITA.toString());
+
+		Assert.assertNull(documentoDireito);
+	}
+
+	@DisplayName("Salvar documento sem posição")
 	@Test
 	public void salvarDocLiberalTest() {
 		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
 		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
-		Documento documentoSemPosicao = docServico.salvar(1l, "YWJjZGY=", null);
+		Documento documentoSemPosicao = docServico.salvar(1l, DOCUMENTO, null);
 
 		Assert.assertThat(documentoSemPosicao.getId(), Matchers.is(1l));
 		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoSemPosicao.getDireita()));
 		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoSemPosicao.getEsquerda()));
 	}
+	
+	@DisplayName("Salvar documento vazio")
+    @Test
+    public void salvarDocumentoVazioTest() {
+        Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
+        Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
+        Documento documentoDireito = docServico.salvar(0, "", "");
+        Assert.assertNull(documentoDireito);
+    }
 
-	@DisplayName("Valida Documento Igual")
+	@DisplayName("Valida documentos iguais")
 	@Test
 	public void validarDocumentoIgualTest() {
-		Documento documentoIgual = new Documento(1l, "YWJjZGY=", "YWJjZGY=");
+		Documento documentoIgual = new Documento(1l, DOCUMENTO, DOCUMENTO);
 		Mockito.doReturn(documentoIgual).when(repositorio).findById(Mockito.eq(1l));
-
 		String resultado = docServico.validarDocumento(1l);
 
 		Assert.assertThat(resultado, Matchers.is("Documentos " + 1l + " idênticos"));
 	}
 
-	@DisplayName("Valida Documento Diferente")
+	@DisplayName("Valida documentos diferentes")
 	@Test
 	public void validarDocumentoDiferenteTest() {
-		Documento documentoDiferente = new Documento(1l, "YWJjZGY=", "YWJjZGU=");
+		Documento documentoDiferente = new Documento(1l, DOCUMENTO, DOCUMENTO_DIFERENTE);
 		Mockito.doReturn(documentoDiferente).when(repositorio).findById(Mockito.eq(1l));
-
 		String resultado = docServico.validarDocumento(1l);
 
-		Assert.assertThat(resultado,
-				Matchers.is("Os documentos têm o mesmo tamanho, porém divergem a partir da posição: 4"));
+		Assert.assertThat(resultado, Matchers.is(Mensagens.DOC_TAM_DIVERGENTE + " 4"));
 	}
 
-	@DisplayName("Valida Documento Tamanho Diferente")
+	@DisplayName("Valida documentos com tamanhos diferentes")
 	@Test
 	public void validarDocumentoTamDiferenteTest() {
-		Documento documentoTamDiferente = new Documento(1l, "YWJjZGY=", "YWJjZGVmZw==");
+		Documento documentoTamDiferente = new Documento(1l, DOCUMENTO, DOCUMENTO_TAM_DIFERENTE);
 		Mockito.doReturn(documentoTamDiferente).when(repositorio).findById(Mockito.eq(1l));
-
 		String resultado = docServico.validarDocumento(1l);
 
 		Assert.assertThat(resultado, Matchers.is("Documentos " + 1l + " com tamanhos diferentes"));

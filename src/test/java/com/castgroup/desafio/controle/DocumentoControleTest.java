@@ -11,7 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.castgroup.desafio.repositorio.Repositorio;
-import com.castgroup.desafio.utils.JSON2Doc;
+import com.castgroup.desafio.utils.Mensagens;
+import com.castgroup.desafio.utils.DocumentoUtil;
+import com.castgroup.desafio.utils.DocumentoJson;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -23,37 +25,52 @@ public class DocumentoControleTest {
 	@Autowired
 	public DocumentoControle docControle;
 
-	private JSON2Doc json;
+	private DocumentoJson json;
+
+	private static String DOCUMENTO = "YWJjZGY=";
 
 	@Before
 	public void init() {
-		
 		this.repositorio.deleteAll();
-		json = new JSON2Doc("YWJjZGY=");
 	}
 
-	@DisplayName("POST Documento Esquerda")
+	@DisplayName("POST documento esquerdo sucesso")
 	@Test
-	public void esquerdaTest() {
-
-		String resultado = docControle.esquerda(1l, json);
-		Assert.assertThat(resultado, Matchers.is("{\"Resultado\":\"O documento esquerdo foi salvo com sucesso!\"}"));
+	public void documentoEsquerdoSucessoTest() {
+		json = new DocumentoJson(DOCUMENTO);
+		String resultado = docControle.documentoEsquerdo(1l, json);
+		Assert.assertThat(resultado, Matchers.is(DocumentoUtil.respostaJson(Mensagens.DOC_ESQUERDO_SALVO_SUCESSO)));
 	}
 
-	@DisplayName("POST Documento Esquerda")
+	@DisplayName("POST documento esquerdo falha")
 	@Test
-	public void direitaTest() {
-		
-		String resultado = docControle.direita(1l, json);
-		Assert.assertThat(resultado, Matchers.is("{\"Resultado\":\"O documento direito foi salvo com sucesso!\"}"));
+	public void documentoEsquerdoFalhaTest() {
+		json = new DocumentoJson("");
+		String resultado = docControle.documentoEsquerdo(1l, json);
+		Assert.assertThat(resultado, Matchers.is(DocumentoUtil.respostaJson(Mensagens.DOC_ESQUERDO_NAO_SALVO)));
 	}
 
-	@DisplayName("GET Documentos")
+	@DisplayName("POST documento direito sucesso")
 	@Test
-	public void diferenca() {
+	public void documentoDireitoSucessoTest() {
+		json = new DocumentoJson(DOCUMENTO);
+		String resultado = docControle.documentoDireito(1l, json);
+		Assert.assertThat(resultado, Matchers.is(DocumentoUtil.respostaJson(Mensagens.DOC_DIREITO_SALVO_SUCESSO)));
+	}
 
-		String resultado = docControle.diferenca(1l);
-		Assert.assertThat(resultado, Matchers.is("{\"Resultado\":\"Nenhum dado encontrado!\"}"));
+	@DisplayName("POST documento direito falha")
+	@Test
+	public void documentoDireitoFalhaTest() {
+		json = new DocumentoJson("");
+		String resultado = docControle.documentoDireito(1l, json);
+		Assert.assertThat(resultado, Matchers.is(DocumentoUtil.respostaJson(Mensagens.DOC_DIREITO_NAO_SALVO)));
+	}
+
+	@DisplayName("GET documentos")
+	@Test
+	public void documentoDiferencaNaoEncontradoTest() {
+		String resultado = docControle.documentoDiferenca(1l);
+		Assert.assertThat(resultado, Matchers.is(DocumentoUtil.respostaJson(Mensagens.DOC_NAO_ENCONTRADO)));
 	}
 
 }

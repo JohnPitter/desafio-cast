@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.castgroup.desafio.modelo.Documento;
 import com.castgroup.desafio.repositorio.Repositorio;
+import com.castgroup.desafio.utils.Mensagens;
 import com.castgroup.desafio.utils.DocumentoUtil;
-import com.castgroup.desafio.utils.PosicaoDoc;
+import com.castgroup.desafio.utils.DocumentoPosicao;
 
 @Service
 public class DocumentoServico {
@@ -20,7 +21,7 @@ public class DocumentoServico {
 	
 	public Documento salvar(long id, String dados, String posicao){
 		Documento documento = null;
-		
+	
 		try {
 			
 			if(!DocumentoUtil.nuloOuBranco(dados)) {			
@@ -31,9 +32,9 @@ public class DocumentoServico {
 					documento.setId(id);
 				}
 				
-				if(PosicaoDoc.ESQUERDA.toString().equals(posicao)) {
+				if(DocumentoPosicao.ESQUERDA.toString().equals(posicao)) {
 					documento.setEsquerda(dados);
-				} else if(PosicaoDoc.DIREITA.toString().equals(posicao)) {
+				} else if(DocumentoPosicao.DIREITA.toString().equals(posicao)) {
 					documento.setDireita(dados);
 				} else {
 					return documento;
@@ -42,7 +43,7 @@ public class DocumentoServico {
 				documento = repositorio.save(documento);
 			}
 		} catch(Exception e) {
-			e.getStackTrace();
+			e.printStackTrace();
 		}
 		
 		return documento;
@@ -52,15 +53,15 @@ public class DocumentoServico {
 		Documento documento = repositorio.findById(id);
 		
 		if(documento == null) {
-			return "Nenhum dado encontrado!";
+			return Mensagens.DOC_NAO_ENCONTRADO;
 		}
 		
 		if(DocumentoUtil.nuloOuBranco(documento.getEsquerda()) || DocumentoUtil.nuloOuBranco(documento.getDireita())) {
-			return "Dados incompletos!";
+			return Mensagens.DOC_INCOMPLETO;
 		}
 		
-		byte[] bytesEsquerda = interprete("uncode", documento.getEsquerda()).getBytes();
-		byte[] bytesDireita = interprete("uncode", documento.getDireita()).getBytes();
+		byte[] bytesEsquerda = interprete(Mensagens.UNCODE, documento.getEsquerda()).getBytes();
+		byte[] bytesDireita = interprete(Mensagens.UNCODE, documento.getDireita()).getBytes();
 		
 		boolean resultado = Arrays.equals(bytesEsquerda, bytesDireita);
 		
@@ -72,7 +73,6 @@ public class DocumentoServico {
 			return "Documentos " + id + " com tamanhos diferentes";
 		} else {
 			byte diferente = 0;
-			
 			for(int i = 0; i < bytesEsquerda.length; i++) {
 				diferente = (byte) (bytesEsquerda[i] ^ bytesDireita[i]);
 				
@@ -81,20 +81,18 @@ public class DocumentoServico {
 				}
 			}
 		}
-		
-		return "Os documentos têm o mesmo tamanho, porém divergem a partir da posição:".concat(posicao);
+		return Mensagens.DOC_TAM_DIVERGENTE.concat(posicao);
 		
 	}
 	
 	private String interprete(String comando, String dados) {
-		Base64 b64 = new Base64();
-		
-		if(comando == "code") {
+		Base64 b64 = new Base64();		
+		/*if(comando.equals(Mensagens.CODE)) {
 			return b64.encodeAsString(dados.getBytes());
-		} else if (comando == "uncode") {
-			return new String(b64.decode(dados), Charset.forName("UTF-8"));
-		} else {
-			return "Comando inválido!";
-		}
+		} else */
+		if (comando.equals(Mensagens.UNCODE)) 
+			return new String(b64.decode(dados), Charset.forName(Mensagens.ENCODING));
+		 else 
+			return Mensagens.COMANDO_INVALIDO;
 	}
 }

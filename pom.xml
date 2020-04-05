@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.castgroup</groupId>
 	<artifactId>desafio</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>base64</name>
 	<description>Comparação de bases64.</description>
 
