@@ -18,7 +18,9 @@ public class DocumentoServico {
 	@Autowired
 	public Repositorio repositorio;
 	
-	public boolean salvar(int id, String dados, String posicao){
+	public boolean resultado = false;
+	
+	public Documento salvar(int id, String dados, String posicao){
 		Documento doc = null;
 		
 		try {
@@ -36,17 +38,16 @@ public class DocumentoServico {
 				} else if(PosicaoDoc.DIREITA.toString().equals(posicao)) {
 					doc.setDireita(decodificarB64(dados));
 				} else {
-					return false;
+					return doc;
 				}
 				
 				doc = repositorio.save(doc);
-				return true;
 			}
 		} catch(Exception e) {
 			e.getStackTrace();
 		}
 		
-		return false;
+		return doc;
 	}
 	
 	private boolean validacao(String dados) {

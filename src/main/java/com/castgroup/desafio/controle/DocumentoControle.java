@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.castgroup.desafio.modelo.Documento;
 import com.castgroup.desafio.serviço.DocumentoServico;
 import com.castgroup.desafio.utils.PosicaoDoc;
+import com.castgroup.desafio.utils.DocumentoUtil;
 import com.castgroup.desafio.utils.JSON2Doc;
 
 @RestController
@@ -17,22 +19,23 @@ public class DocumentoControle {
 
 	@Autowired
 	private DocumentoServico servico;
+	private Documento docResultado;
 
 	@RequestMapping(value = "/left", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public String esquerda(@PathVariable int id, @RequestBody JSON2Doc dados) {
 
-		boolean resultado = servico.salvar(id, dados.getDados(), PosicaoDoc.ESQUERDA.toString());
+		docResultado = servico.salvar(id, dados.getDados(), PosicaoDoc.ESQUERDA.toString());
 		
-		return (resultado) ? respostaJson("O documento esquerdo foi salvo com sucesso!")
-				: respostaJson("O documento não foi salvo!");
+		return (DocumentoUtil.verficarDocEsquerda(docResultado)) ? respostaJson("O documento esquerdo foi salvo com sucesso!")
+				: respostaJson("O documento esquerdo não foi salvo!");
 	}
 
 	@RequestMapping(value = "/right", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public String direita(@PathVariable int id, @RequestBody JSON2Doc dados) {
 
-		boolean resultado = servico.salvar(id, dados.getDados(), PosicaoDoc.DIREITA.toString());
+		docResultado = servico.salvar(id, dados.getDados(), PosicaoDoc.DIREITA.toString());
 		
-		return (resultado) ? respostaJson("O documento direito foi salvo com sucesso!")
+		return (DocumentoUtil.verficarDocDireita(docResultado)) ? respostaJson("O documento direito foi salvo com sucesso!")
 				: respostaJson("O documento não foi salvo!");
 	}
 
