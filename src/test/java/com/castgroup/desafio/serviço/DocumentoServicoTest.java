@@ -38,35 +38,35 @@ public class DocumentoServicoTest {
 	@DisplayName("Salvar Documento Esquerda")
 	@Test
 	public void salvarDocEsquerdaTest() {
-		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1));
+		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
 		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
-		Documento documentoEsquerda = docServico.salvar(1, "YWJjZGY=", PosicaoDoc.ESQUERDA.toString());
+		Documento documentoEsquerda = docServico.salvar(1l, "YWJjZGY=", PosicaoDoc.ESQUERDA.toString());
 
-		Assert.assertThat(documentoEsquerda.getId(), Matchers.is(1));
-		Assert.assertThat(documentoEsquerda.getEsquerda(), Matchers.is("abcdf"));
+		Assert.assertThat(documentoEsquerda.getId(), Matchers.is(1l));
+		Assert.assertThat(documentoEsquerda.getEsquerda(), Matchers.is("YWJjZGY="));
 		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoEsquerda.getDireita()));
 	}
 
-	@DisplayName("Salvar Doc Direita")
+	@DisplayName("Salvar Documento Direita")
 	@Test
 	public void salvardocDireitaTest() {
-		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1));
+		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
 		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
-		Documento documentoDireita = docServico.salvar(1, "YWJjZGY=", PosicaoDoc.DIREITA.toString());
+		Documento documentoDireita = docServico.salvar(1l, "YWJjZGY=", PosicaoDoc.DIREITA.toString());
 
-		Assert.assertThat(documentoDireita.getId(), Matchers.is(1));
-		Assert.assertThat(documentoDireita.getDireita(), Matchers.is("abcdf"));
+		Assert.assertThat(documentoDireita.getId(), Matchers.is(1l));
+		Assert.assertThat(documentoDireita.getDireita(), Matchers.is("YWJjZGY="));
 		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoDireita.getEsquerda()));
 	}
 
-	@DisplayName("Salvar Doc Sem Posição")
+	@DisplayName("Salvar Documento Sem Posição")
 	@Test
 	public void salvarDocLiberalTest() {
-		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1));
+		Mockito.doReturn(null).when(repositorio).findById(Mockito.eq(1l));
 		Mockito.doAnswer(returnsFirstArg()).when(repositorio).save(Mockito.any(Documento.class));
-		Documento documentoSemPosicao = docServico.salvar(1, "YWJjZGY=", null);
+		Documento documentoSemPosicao = docServico.salvar(1l, "YWJjZGY=", null);
 
-		Assert.assertThat(documentoSemPosicao.getId(), Matchers.is(1));
+		Assert.assertThat(documentoSemPosicao.getId(), Matchers.is(1l));
 		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoSemPosicao.getDireita()));
 		Assert.assertTrue(StringUtils.isNullOrEmpty(documentoSemPosicao.getEsquerda()));
 	}
@@ -74,35 +74,35 @@ public class DocumentoServicoTest {
 	@DisplayName("Valida Documento Igual")
 	@Test
 	public void validarDocumentoIgualTest() {
-		Documento documentoIgual = new Documento(1, "YWJjZGY=", "YWJjZGY=");
-		Mockito.doReturn(documentoIgual).when(repositorio).findById(Mockito.eq(1));
+		Documento documentoIgual = new Documento(1l, "YWJjZGY=", "YWJjZGY=");
+		Mockito.doReturn(documentoIgual).when(repositorio).findById(Mockito.eq(1l));
 
-		String resultado = docServico.validaDocumento(1);
+		String resultado = docServico.validarDocumento(1l);
 
-		Assert.assertThat(resultado, Matchers.is("Os documentos são iguais!"));
+		Assert.assertThat(resultado, Matchers.is("Documentos " + 1l + " idênticos"));
 	}
 
 	@DisplayName("Valida Documento Diferente")
 	@Test
 	public void validarDocumentoDiferenteTest() {
-		Documento documentoDiferente = new Documento(1, "YWJjZGY=", "YWJjZGU=");
-		Mockito.doReturn(documentoDiferente).when(repositorio).findById(Mockito.eq(1));
+		Documento documentoDiferente = new Documento(1l, "YWJjZGY=", "YWJjZGU=");
+		Mockito.doReturn(documentoDiferente).when(repositorio).findById(Mockito.eq(1l));
 
-		String resultado = docServico.validaDocumento(1);
+		String resultado = docServico.validarDocumento(1l);
 
 		Assert.assertThat(resultado,
-				Matchers.is("Os documentos têm o mesmo tamanho, porém divergem a partir da posição: 6"));
+				Matchers.is("Os documentos têm o mesmo tamanho, porém divergem a partir da posição: 4"));
 	}
 
 	@DisplayName("Valida Documento Tamanho Diferente")
 	@Test
 	public void validarDocumentoTamDiferenteTest() {
-		Documento documentoTamDiferente = new Documento(1, "YWJjZGY=", "YWJjZGVmZw==");
-		Mockito.doReturn(documentoTamDiferente).when(repositorio).findById(Mockito.eq(1));
+		Documento documentoTamDiferente = new Documento(1l, "YWJjZGY=", "YWJjZGVmZw==");
+		Mockito.doReturn(documentoTamDiferente).when(repositorio).findById(Mockito.eq(1l));
 
-		String resultado = docServico.validaDocumento(1);
+		String resultado = docServico.validarDocumento(1l);
 
-		Assert.assertThat(resultado, Matchers.is("Os documentos não tem o mesmo tamanho!"));
+		Assert.assertThat(resultado, Matchers.is("Documentos " + 1l + " com tamanhos diferentes"));
 	}
 
 }

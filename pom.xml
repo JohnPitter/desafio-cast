@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.castgroup</groupId>
 	<artifactId>desafio</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 	<name>base64</name>
 	<description>Comparação de bases64.</description>
 
@@ -47,6 +47,11 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
 		</dependency>
 
 		<dependency>

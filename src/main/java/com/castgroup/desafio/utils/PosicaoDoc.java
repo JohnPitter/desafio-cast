@@ -11,7 +11,7 @@ public enum PosicaoDoc {
 		case DIREITA:
 			return "DIREITA";
 		}
-		throw new Error("Um erro ocorreu no posicionamento do documento!");
+		return "Um erro ocorreu no posicionamento do documento!";
 	}
 
 }

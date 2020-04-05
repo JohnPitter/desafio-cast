@@ -1,9 +1,11 @@
 package com.castgroup.desafio.repositorio;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.castgroup.desafio.modelo.*;
 
-public interface Repositorio extends JpaRepository<Documento, Integer> {
-	Documento findById(int id);
+@Repository
+public interface Repositorio extends JpaRepository<Documento, Long> {
+	Documento findById(long id);
 }

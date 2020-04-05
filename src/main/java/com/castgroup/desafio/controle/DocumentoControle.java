@@ -19,32 +19,32 @@ public class DocumentoControle {
 
 	@Autowired
 	private DocumentoServico servico;
-	private Documento docResultado;
+	private Documento resultadoDocumento;
 
 	@RequestMapping(value = "/left", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public String esquerda(@PathVariable int id, @RequestBody JSON2Doc dados) {
+	public String esquerda(@PathVariable long id, @RequestBody JSON2Doc dados) {
 
-		docResultado = servico.salvar(id, dados.getDados(), PosicaoDoc.ESQUERDA.toString());
+		resultadoDocumento = servico.salvar(id, dados.getDados(), PosicaoDoc.ESQUERDA.toString());
 		
-		return (DocumentoUtil.verficarDocEsquerda(docResultado)) ? respostaJson("O documento esquerdo foi salvo com sucesso!")
+		return (DocumentoUtil.verficarDocEsquerda(resultadoDocumento)) ? respostaJson("O documento esquerdo foi salvo com sucesso!")
 				: respostaJson("O documento esquerdo não foi salvo!");
 	}
 
 	@RequestMapping(value = "/right", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public String direita(@PathVariable int id, @RequestBody JSON2Doc dados) {
+	public String direita(@PathVariable long id, @RequestBody JSON2Doc dados) {
 
-		docResultado = servico.salvar(id, dados.getDados(), PosicaoDoc.DIREITA.toString());
+		resultadoDocumento = servico.salvar(id, dados.getDados(), PosicaoDoc.DIREITA.toString());
 		
-		return (DocumentoUtil.verficarDocDireita(docResultado)) ? respostaJson("O documento direito foi salvo com sucesso!")
+		return (DocumentoUtil.verficarDocDireita(resultadoDocumento)) ? respostaJson("O documento direito foi salvo com sucesso!")
 				: respostaJson("O documento não foi salvo!");
 	}
 
 	@RequestMapping(method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-	public String diferenca(@PathVariable int id) {
-		return respostaJson(servico.validaDocumento(id));
+	public String diferenca(@PathVariable long id) {
+		return respostaJson(servico.validarDocumento(id));
 	}
 
-	public String respostaJson(String mensagem) {
+	private String respostaJson(String mensagem) {
 		return "{\"" + "Resultado" + "\":" + "\"" + mensagem + "\"" + "}";
 	}
 }

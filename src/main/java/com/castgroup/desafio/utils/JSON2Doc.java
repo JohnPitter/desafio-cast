@@ -4,10 +4,6 @@ public class JSON2Doc {
 	
 	private String dados;
 	
-	public JSON2Doc() {
-		
-	}
-	
 	public JSON2Doc(String dados) {
 		this.dados = dados;
 	}

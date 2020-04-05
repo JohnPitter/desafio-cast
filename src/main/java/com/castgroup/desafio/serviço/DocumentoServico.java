@@ -2,14 +2,14 @@ package com.castgroup.desafio.serviço;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Base64;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.castgroup.desafio.modelo.Documento;
 import com.castgroup.desafio.repositorio.Repositorio;
+import com.castgroup.desafio.utils.DocumentoUtil;
 import com.castgroup.desafio.utils.PosicaoDoc;
 
 @Service
@@ -18,64 +18,58 @@ public class DocumentoServico {
 	@Autowired
 	public Repositorio repositorio;
 	
-	public boolean resultado = false;
-	
-	public Documento salvar(int id, String dados, String posicao){
-		Documento doc = null;
+	public Documento salvar(long id, String dados, String posicao){
+		Documento documento = null;
 		
 		try {
 			
-			if(validacao(dados)) {			
-				doc = repositorio.findById(id);
+			if(!DocumentoUtil.nuloOuBranco(dados)) {			
+				documento = repositorio.findById(id);
 				
-				if(doc == null) {
-					doc = new Documento();
-					doc.setId(id);
+				if(documento == null) {
+					documento = new Documento();
+					documento.setId(id);
 				}
 				
 				if(PosicaoDoc.ESQUERDA.toString().equals(posicao)) {
-					doc.setEsquerda(decodificarB64(dados));
+					documento.setEsquerda(dados);
 				} else if(PosicaoDoc.DIREITA.toString().equals(posicao)) {
-					doc.setDireita(decodificarB64(dados));
+					documento.setDireita(dados);
 				} else {
-					return doc;
+					return documento;
 				}
 				
-				doc = repositorio.save(doc);
+				documento = repositorio.save(documento);
 			}
 		} catch(Exception e) {
 			e.getStackTrace();
 		}
 		
-		return doc;
+		return documento;
 	}
 	
-	private boolean validacao(String dados) {
-		return (StringUtils.isEmpty(dados)) ? false : true;
-	}
-	
-	public String validaDocumento(int id) {
-		Documento doc = repositorio.findById(id);
+	public String validarDocumento(long id) {
+		Documento documento = repositorio.findById(id);
 		
-		if(doc == null) {
+		if(documento == null) {
 			return "Nenhum dado encontrado!";
 		}
 		
-		if(StringUtils.isEmpty(doc.getEsquerda()) || StringUtils.isEmpty(doc.getDireita())) {
+		if(DocumentoUtil.nuloOuBranco(documento.getEsquerda()) || DocumentoUtil.nuloOuBranco(documento.getDireita())) {
 			return "Dados incompletos!";
 		}
 		
-		byte[] bytesEsquerda = doc.getEsquerda().getBytes();
-		byte[] bytesDireita = doc.getDireita().getBytes();
+		byte[] bytesEsquerda = interprete("uncode", documento.getEsquerda()).getBytes();
+		byte[] bytesDireita = interprete("uncode", documento.getDireita()).getBytes();
 		
 		boolean resultado = Arrays.equals(bytesEsquerda, bytesDireita);
 		
 		String posicao = "";
 		
 		if(resultado) {
-			return "Os documentos são iguais!";
+			return "Documentos " + id + " idênticos";
 		} else if(bytesEsquerda.length != bytesDireita.length) {
-			return "Os documentos não tem o mesmo tamanho!";
+			return "Documentos " + id + " com tamanhos diferentes";
 		} else {
 			byte diferente = 0;
 			
@@ -92,15 +86,15 @@ public class DocumentoServico {
 		
 	}
 	
-	/*
-	private String codificarB64(String dado) {
-		return Base64.getEncoder().encodeToString(dado.getBytes());
-	}*/
-
-
-	private String decodificarB64(String dado) {
-	    byte[] bytesDecodificados = Base64.getDecoder().decode(dado);
-	    return new String(bytesDecodificados, Charset.forName("UTF-8"));
+	private String interprete(String comando, String dados) {
+		Base64 b64 = new Base64();
+		
+		if(comando == "code") {
+			return b64.encodeAsString(dados.getBytes());
+		} else if (comando == "uncode") {
+			return new String(b64.decode(dados), Charset.forName("UTF-8"));
+		} else {
+			return "Comando inválido!";
+		}
 	}
-
 }

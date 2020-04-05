@@ -11,23 +11,23 @@ public class Documento implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	private int id;
+	private long id;
 	private String esquerda;
 	private String direita;
 
 	public Documento() {};
 	
-	public Documento(int id, String esquerda, String direita) {
+	public Documento(long id, String esquerda, String direita) {
 		this.id = id;
 		this.esquerda = esquerda;
 		this.direita = direita;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -45,10 +45,5 @@ public class Documento implements Serializable {
 
 	public void setDireita(String direita) {
 		this.direita = direita;
-	}
-
-	@Override
-	public String toString() {
-		return "Documento [id=" + getId() + ", esquerda=" + getEsquerda() + ", direita=" + getDireita() + "]";
 	}
 }

@@ -36,7 +36,7 @@ public class DocumentoControleTest {
 	@Test
 	public void esquerdaTest() {
 
-		String resultado = docControle.esquerda(1, json);
+		String resultado = docControle.esquerda(1l, json);
 		Assert.assertThat(resultado, Matchers.is("{\"Resultado\":\"O documento esquerdo foi salvo com sucesso!\"}"));
 	}
 
@@ -44,7 +44,7 @@ public class DocumentoControleTest {
 	@Test
 	public void direitaTest() {
 		
-		String resultado = docControle.direita(1, json);
+		String resultado = docControle.direita(1l, json);
 		Assert.assertThat(resultado, Matchers.is("{\"Resultado\":\"O documento direito foi salvo com sucesso!\"}"));
 	}
 
@@ -52,7 +52,7 @@ public class DocumentoControleTest {
 	@Test
 	public void diferenca() {
 
-		String resultado = docControle.diferenca(1);
+		String resultado = docControle.diferenca(1l);
 		Assert.assertThat(resultado, Matchers.is("{\"Resultado\":\"Nenhum dado encontrado!\"}"));
 	}
 
