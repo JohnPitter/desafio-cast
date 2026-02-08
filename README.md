@@ -1,51 +1,114 @@
-# desafio-cast
-Comparação de documentos na BASE64.
+# Desafio Cast
 
-# desafio
-• Prover dois http endponts que aceite um JSON base64 de dados binários de entrada.
-    o <host>/v1/diff/<ID>/left and <host>/v1/diff/<ID>/right
-• Prover um endponint com resultado da diferença dois documentos passados.
-    o <host>/v1/diff/<ID>
-• Os resultados devem ser em JSON seguindo os seguintes requisitos.
-    o Se os documentos forem igual, retorne "Documentos <ID> idênticos"
-    o Se os documentos não forem do mesmo tamanho, retorne "Documentos <ID> com tamanhos diferentes"
-    o Se os documentos forem do mesmo tamanho não é necessário um diff real, somente: Retornar em qual posição (Offset) os documentos se diferem.
+<div align="center">
 
-# configuração do ambiente
+![Java](https://img.shields.io/badge/Java-8+-orange?style=for-the-badge&logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-green?style=for-the-badge&logo=springboot)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 
-1. Utilizar o JDK 1.8+
-2. Executar o comando mvn clean install
-3. Rodar a aplicação SpringBoot
+**Comparacao de Documentos em BASE64**
 
-# usando a API
-Para verificar o funcionamento da API, será necessário os seguintes passos:
+*API REST para comparacao de documentos binarios codificados em Base64*
 
-1. Ter ou baixar o Isomnia e/ou Postman
-2. Criar uma requisição POST com a seguinte configuração:
-        Headers
-        {
-            "Content-Type" : "application/json"
-        }
-        Body - raw
-        {
-	        "dados" : "YWJjZGU="
-        }
-3. Para os documentos referentes a posição esquerda, enviar a requisição para a URL: "http://localhost:8080/v1/diff/1/left"
-4. Aguarde o resultado. Se sucesso(Status 200), a mensagem será essa: 
-    {
-        "Resultado": "O documento esquerdo foi salvo com sucesso!"
-    }
-5. Para os documentos referentes a posição direta, repita o passo 2, 3 e 4 com a seguinte url: "http://localhost:8080/v1/diff/1/right"
-6. Aguarde o resultado da requisição. Se sucesso(Status 200), a mensagem será essa: 
-    {
-        "Resultado": "O documento direito foi salvo com sucesso!"
-    }
-7. Após as duas requisições forem criadas e salvas, crie outra do tipo GET, com a seguinte URL: "http://localhost:8080/v1/diff/1"
+[API](#api-endpoints) •
+[Instalacao](#instalacao) •
+[Uso](#uso)
 
-* Dependendo dos parâmetros enviados, o retorno será de acordo com as regras citadas no desafio acima.
-    -- Considere como exemplo a busca de dois documentos iguais.
+</div>
 
-8. Se sucesso(Status 200) para os paramêtros salvos anteriormente, a requisição retornará essa mensagem:
-    {
-        "Resultado": "Documentos 1 idênticos"
-    }
+---
+
+## Overview
+
+API REST para comparacao de documentos em BASE64. Recebe dois documentos codificados, armazena e compara retornando se sao identicos, tem tamanhos diferentes, ou em qual posicao (offset) se diferem.
+
+---
+
+## API Endpoints
+
+| Metodo | Endpoint | Descricao |
+|--------|----------|-----------|
+| `POST` | `/v1/diff/{id}/left` | Envia documento da esquerda |
+| `POST` | `/v1/diff/{id}/right` | Envia documento da direita |
+| `GET` | `/v1/diff/{id}` | Retorna resultado da comparacao |
+
+### Resultados Possiveis
+
+| Cenario | Resposta |
+|---------|----------|
+| Documentos identicos | `"Documentos {id} identicos"` |
+| Tamanhos diferentes | `"Documentos {id} com tamanhos diferentes"` |
+| Mesmo tamanho, conteudo diferente | Offset onde os documentos se diferem |
+
+---
+
+## Instalacao
+
+### Requisitos
+
+| Requisito | Versao |
+|-----------|--------|
+| JDK | 8+ |
+| Maven | 3.6+ |
+
+### Quick Start
+
+```bash
+# Clone o repositorio
+git clone https://github.com/JohnPitter/desafio-cast.git
+cd desafio-cast
+
+# Build
+mvn clean install
+
+# Execute
+mvn spring-boot:run
+```
+
+A API estara disponivel em `http://localhost:8080`
+
+---
+
+## Uso
+
+### Enviar Documento Esquerdo
+
+```bash
+curl -X POST http://localhost:8080/v1/diff/1/left \
+  -H "Content-Type: application/json" \
+  -d '{"dados": "YWJjZGU="}'
+```
+
+### Enviar Documento Direito
+
+```bash
+curl -X POST http://localhost:8080/v1/diff/1/right \
+  -H "Content-Type: application/json" \
+  -d '{"dados": "YWJjZGU="}'
+```
+
+### Comparar Documentos
+
+```bash
+curl http://localhost:8080/v1/diff/1
+```
+
+---
+
+## Formato de Entrada
+
+```json
+{
+  "dados": "YWJjZGU="
+}
+```
+
+| Campo | Tipo | Descricao |
+|-------|------|-----------|
+| `dados` | string | Documento codificado em BASE64 |
+
+---
+
+## License
+
+MIT
